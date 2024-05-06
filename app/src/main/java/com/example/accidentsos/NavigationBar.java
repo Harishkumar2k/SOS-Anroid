@@ -11,25 +11,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.accidentsos.DataModel.NotificationModel;
 import com.example.accidentsos.ServerResponses.FriendsResponse;
-import com.example.accidentsos.adapter.NotificationAdapter;
 import com.example.accidentsos.api.RestClient;
 import com.example.accidentsos.databinding.ActivityMainBinding;
-import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.badge.ExperimentalBadgeUtils;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
-
-import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -42,8 +35,8 @@ import retrofit2.Response;
     Home home = new Home();
     Friends friends = new Friends();
     History history = new History();
-    private ArrayList<NotificationModel> data=new ArrayList<>();
-    private BadgeDrawable badgeDrawable;
+
+
 //    ImageView backbtn,notificationbtn,optionbtn;
 
     Toolbar toolbar;
@@ -71,7 +64,6 @@ import retrofit2.Response;
             }
         });
 
-//
         Call<FriendsResponse> friendsResponseCall = RestClient.makeApi().friends();
 
         friendsResponseCall.enqueue(new Callback<FriendsResponse>() {
@@ -80,17 +72,11 @@ import retrofit2.Response;
                 if(response.isSuccessful()){
                     if (response.body().getStatus().equals("200")){
 
-
-                        Log.d(TAG, "onResponse: "+response.body().getData().size());
                         for (int i = 0; i < response.body().getData().size(); i++) {
-                            FriendsResponse.Datum d = response.body().getData().get(i);
-                            data.add(new NotificationModel(d.getId(),d.getName(),d.getAge(),d.getDob(),d.getGender(),d.getBloodgroup(),d.getMobilenumber(),d.getLongitude(),d.getLatitude(),d.getAddress()));
 
                             pendingSMSCount =response.body().getData().size();
-
+                            invalidateOptionsMenu();
                         }
-
-
                     }
                 }
             }
@@ -160,7 +146,10 @@ import retrofit2.Response;
 
         // Check which menu item was clicked and show toast accordingly
         if (id == R.id.notifications) {
-
+            // Reset pendingSMSCount to zero
+            pendingSMSCount = 0;
+            // Update badge count
+            invalidateOptionsMenu();
             startActivity(new Intent(NavigationBar.this,Notifications.class));
 
             return true;
@@ -184,9 +173,6 @@ import retrofit2.Response;
         return super.onOptionsItemSelected(item);
     }
 
-    private void showToast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

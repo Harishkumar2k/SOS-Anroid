@@ -282,9 +282,9 @@ public class Home extends Fragment {
                                     Toast.makeText(getContext(), "location send", Toast.LENGTH_SHORT).show();
                                 }
 
-//                                if (response.body().getStatus().equals("404")){
-//                                    Toast.makeText(getContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
-//                                }
+                                if (response.body().getStatus().equals("404")){
+                                    Toast.makeText(getContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                                }
                             }
                         }
 
